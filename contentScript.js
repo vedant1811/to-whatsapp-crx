@@ -10,29 +10,48 @@ function toWhatsAppNumber(phoneNumber) {
   return phoneNumber.number.number.substring(1);
 }
 
-/**
- * Element texts are matched against phoneNumbers
- */
-function findAndAddSendToWa(element, phoneNumbers, libPhoneNumber) {
-  element.childNodes.forEach(function (child) {
-    findAndAddSendToWa(child, phoneNumbers);
-  });
-
-  if (matchingNumber = matchingWhatsAppNumber(element, phoneNumbers, libPhoneNumber)) {
-    addSendToWaToElement(element, matchingNumber)
-  }
+// https://stackoverflow.com/a/4793630/1396264
+function insertAfter(newNode, referenceNode) {
+    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
 }
 
-function matchingWhatsAppNumber(element, phoneNumbers, libPhoneNumber) {
+/**
+ * Node texts are matched against phoneNumbers
+ */
+function findAndAddSendToWa(node, phoneNumbers, libPhoneNumber) {
+  if (matchingNumber = matchingWhatsAppNumber(node, phoneNumbers, libPhoneNumber)) {
+    addSendToWaTonode(node, matchingNumber);
+    return;
+  }
+
+  // traverse children only if a matchingNumber was not found
+  node.childNodes.forEach(function (child) {
+    findAndAddSendToWa(child, phoneNumbers);
+  });
+}
+
+function matchingWhatsAppNumber(node, phoneNumbers, libPhoneNumber) {
   for (phoneNumber of phoneNumbers) {
-    if (phoneNumber.number.nationalNumber == element.textContent) {
+    if (phoneNumber.number.nationalNumber == node.textContent) {
       return phoneNumber;
     }
   }
 }
 
-function addSendToWaToElement(element, phoneNumber) {
-  console.log(element);
+function addSendToWaTonode(node, phoneNumber) {
+  const sendToWaNode = document.createElement('span');
+  sendToWaNode.innerHTML = generateSendToWaHtml(toWhatsAppNumber(phoneNumber));
+  insertAfter(sendToWaNode, node);
+  console.log(node);
+}
+
+function generateSendToWaHtml(waNumber) {
+  const waIcon = chrome.runtime.getURL('assets/whatsapp.png');
+  return `<a onclick="sendToWaClicked('${waNumber}')"><img class="wa-icon-to-wa-crx" src="${waIcon}" alt="send to WhatsApp"></a>`;
+}
+
+function sendToWaClicked(waNumber) {
+  console.log(`${waNumber} clicked!`);
 }
 
 function main(libPhoneNumber) {
