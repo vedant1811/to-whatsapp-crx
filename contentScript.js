@@ -6,31 +6,38 @@ function getPhoneNumbers(document, libPhoneNumber) {
   return libPhoneNumber.findNumbers(visibleText, { v2: true });
 }
 
+function toWhatsAppNumber(phoneNumber) {
+  return phoneNumber.number.number.substring(1);
+}
+
 /**
- * Element texts are matched against formattedPhoneNumbers
- * @param phoneNumbers Array of phone numbers that can be understood by WhatsApp
+ * Element texts are matched against phoneNumbers
  */
-function addSendToWaButtons(element, phoneNumbers, libPhoneNumber) {
+function findAndAddSendToWa(element, phoneNumbers, libPhoneNumber) {
   element.childNodes.forEach(function (child) {
-    addSendToWaButtons(child, phoneNumbers);
+    findAndAddSendToWa(child, phoneNumbers);
   });
 
-  if (waNumber = matchingWhatsAppNumber(element, phoneNumbers, libPhoneNumber)) {
-    console.log(element);
+  if (matchingNumber = matchingWhatsAppNumber(element, phoneNumbers, libPhoneNumber)) {
+    addSendToWaToElement(element, matchingNumber)
   }
 }
 
 function matchingWhatsAppNumber(element, phoneNumbers, libPhoneNumber) {
   for (phoneNumber of phoneNumbers) {
     if (phoneNumber.number.nationalNumber == element.textContent) {
-      return phoneNumber.number.number.substring(1);
+      return phoneNumber;
     }
   }
 }
 
+function addSendToWaToElement(element, phoneNumber) {
+  console.log(element);
+}
+
 function main(libPhoneNumber) {
   const phoneNumbers = getPhoneNumbers(document, libPhoneNumber);
-  addSendToWaButtons(document.body, phoneNumbers, libPhoneNumber);
+  findAndAddSendToWa(document.body, phoneNumbers, libPhoneNumber);
 }
 
 // ref: https://requirejs.org/docs/errors.html#notloaded
