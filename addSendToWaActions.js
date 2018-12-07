@@ -53,10 +53,6 @@ function generateSendToWaHtml() {
   return `<a><img class="wa-icon-to-wa-crx" src="${waIcon}" alt="send to WhatsApp"></a>`;
 }
 
-function sendToWaClicked(waNumber) {
-  console.log(`${waNumber} clicked!`);
-}
-
 function main(libPhoneNumber) {
   const phoneNumbers = getPhoneNumbers(document, libPhoneNumber);
   findAndAddSendToWa(document.body, phoneNumbers, libPhoneNumber);

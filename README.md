@@ -1,14 +1,12 @@
-### Notes
+## Notes
 
 Scan page for phone numbers
 
 Append a WhatsApp icon
 
-On click, expand to a input box with "send to WhatsApp button"
+### On "Send to WhatsApp" Click:
 
-#### On "Send to WhatsApp" Click:
-
-Update button to progressbar, disable input
+Update button to progressbar
 
 Open inactive tab with https://web.whatsapp.com/send?phone=19999&text=urlencodedtext
 
@@ -31,6 +29,8 @@ whenever the same number appears
  * Expand all icons to inputs
 
  * Ignore on this page
+
+ * Input box with message and placeholders (`$previous_link`, `$previous_link_text`)
 
 ## TODO:
 
