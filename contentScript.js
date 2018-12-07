@@ -1,11 +1,3 @@
-function getPhoneNumbers(document, libPhoneNumber) {
-  // Use the non-standard innerText which has some caveats:
-  // https://stackoverflow.com/questions/35213147/difference-between-textcontent-vs-innertext
-  const visibleText = document.body.innerText;
-
-  return libPhoneNumber.findNumbers(visibleText, { v2: true });
-}
-
 function toWhatsAppNumber(phoneNumber) {
   return phoneNumber.number.number.substring(1);
 }
@@ -13,6 +5,15 @@ function toWhatsAppNumber(phoneNumber) {
 // https://stackoverflow.com/a/4793630/1396264
 function insertAfter(newNode, referenceNode) {
     referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+}
+
+
+function getPhoneNumbers(document, libPhoneNumber) {
+  // Use the non-standard innerText which has some caveats:
+  // https://stackoverflow.com/questions/35213147/difference-between-textcontent-vs-innertext
+  const visibleText = document.body.innerText;
+
+  return libPhoneNumber.findNumbers(visibleText, { v2: true });
 }
 
 /**
@@ -39,15 +40,17 @@ function matchingWhatsAppNumber(node, phoneNumbers, libPhoneNumber) {
 }
 
 function addSendToWaTonode(node, phoneNumber) {
+  const waNumber = toWhatsAppNumber(phoneNumber);
   const sendToWaNode = document.createElement('span');
-  sendToWaNode.innerHTML = generateSendToWaHtml(toWhatsAppNumber(phoneNumber));
+  sendToWaNode.innerHTML = generateSendToWaHtml();
+  sendToWaNode.addEventListener('click', () => { sendToWaClicked(waNumber) })
   insertAfter(sendToWaNode, node);
   console.log(node);
 }
 
-function generateSendToWaHtml(waNumber) {
+function generateSendToWaHtml() {
   const waIcon = chrome.runtime.getURL('assets/whatsapp.png');
-  return `<a onclick="sendToWaClicked('${waNumber}')"><img class="wa-icon-to-wa-crx" src="${waIcon}" alt="send to WhatsApp"></a>`;
+  return `<a><img class="wa-icon-to-wa-crx" src="${waIcon}" alt="send to WhatsApp"></a>`;
 }
 
 function sendToWaClicked(waNumber) {
