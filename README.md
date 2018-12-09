@@ -35,3 +35,5 @@ whenever the same number appears
 ## TODO:
 
  * Option to enter a default country code (in case its missing on the phone) for a page/domain
+
+ * Prevent duplicate messages from being sent

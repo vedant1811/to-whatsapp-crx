@@ -4,7 +4,7 @@ chrome.runtime.onMessage.addListener(
     console.log(request);
 
     chrome.tabs.create({
-      url: createWaWebLink(request.waNumber),
+      url: createWaWebLink(request.waNumber, request.message),
       active: false
     }, waWebTabCreated)
   }

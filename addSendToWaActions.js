@@ -43,9 +43,8 @@ function addSendToWaTonode(node, phoneNumber) {
   const waNumber = toWhatsAppNumber(phoneNumber);
   const sendToWaNode = document.createElement('span');
   sendToWaNode.innerHTML = generateSendToWaHtml();
-  sendToWaNode.addEventListener('click', () => { sendToWaClicked(waNumber) })
+  sendToWaNode.addEventListener('click', () => { sendToWaClicked(waNumber, node) })
   insertAfter(sendToWaNode, node);
-  console.log(node);
 }
 
 function generateSendToWaHtml() {
