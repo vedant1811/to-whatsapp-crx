@@ -1,7 +1,11 @@
 function sendToWaClicked(waNumber, phoneElement) {
+  console.log('sendToWaClicked');
+  
   chrome.runtime.sendMessage(
     { waNumber: waNumber, message: generateMessage(phoneElement) },
-    (response) => {}
+    (response) => {
+      console.log(response);
+    }
   );
 }
 

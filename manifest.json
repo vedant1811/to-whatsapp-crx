@@ -11,8 +11,8 @@
 
    "background": {
      "scripts": [
-       "onBrowserAction.js",
-       "openWaWeb.js"
+       "backgroundScripts/onBrowserAction.js",
+       "backgroundScripts/openWaWeb.js"
      ],
      "persistent": false
    },
@@ -30,8 +30,8 @@
        "js": [
          "lib/require.js",
          "lib/libphonenumber-js.min.js",
-         "handleSendToWaClicks.js",
-         "addSendToWaActions.js"
+         "contentScripts/handleSendToWaClicks.js",
+         "contentScripts/addSendToWaActions.js"
        ]
      }
    ],
