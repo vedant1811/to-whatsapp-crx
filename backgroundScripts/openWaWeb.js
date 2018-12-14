@@ -3,11 +3,13 @@ chrome.runtime.onMessage.addListener(
     console.log('onMessage');
     console.log(request);
 
+    const autoSend = request.autoSend;
+
     chrome.tabs.create({
       url: createWaWebLink(request.waNumber, request.message),
-      active: false
+      active: !autoSend
     }, (createdTab) => {
-      sendMessageOnWaTab(createdTab)
+      sendMessageOnWaTab(createdTab, autoSend)
           .then((result) => sendResponse(result))
     })
 
@@ -24,14 +26,23 @@ function sendMessageOnWaTab(waTab, autoSend = false) {
   console.log(`'sendMessageOnWaTab', autoSend: ${autoSend}`);
   console.log(waTab);
 
-  // TODO: implement:
-  return new Promise(function(resolve) {
-    setTimeout(function() {
-      resolve('invalid_number');
-    }, 5000);
-  })
+  if (autoSend) {
+    return executeScript(waTab.id, 'contentScripts/waSendInBackground.js');
+  } else {
+    return Promise.resolve('tab_opened');
+  }
 }
 
 function createWaWebLink(waNumber, text = '') {
   return `https://web.whatsapp.com/send?phone=${waNumber}&text=${text}`;
+}
+
+function executeScript(tabId, filePath) {
+  return new Promise((resolve) => {
+    chrome.tabs.executeScript(
+      tabId,
+      { file: filePath },
+      (results) => resolve(results[0])
+    )
+  });
 }
