@@ -10,8 +10,17 @@
    ],
 
    "background": {
-     "scripts": ["background.js"],
+     "scripts": [
+       "onBrowserAction.js",
+       "openWaWeb.js"
+     ],
      "persistent": false
+   },
+
+   "browser_action": {
+     "default_icon": {
+       "32": "assets/whatsapp.png"
+     }
    },
 
    "content_scripts": [

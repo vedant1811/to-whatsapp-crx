@@ -13,6 +13,8 @@ chrome.runtime.onMessage.addListener(
 function waWebTabCreated(tab) {
   console.log('waWebTabCreated');
   console.log(tab);
+
+  // TODO: conditionally auto send
 }
 
 function createWaWebLink(waNumber, text = '') {
