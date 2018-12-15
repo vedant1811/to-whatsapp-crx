@@ -8,9 +8,8 @@ chrome.runtime.onMessage.addListener(
     chrome.tabs.create({
       url: createWaWebLink(request.waNumber, request.message),
       active: !autoSend
-    }, (createdTab) => {
-      sendMessageOnWaTab(createdTab, autoSend)
-          .then((result) => sendResponse(result))
+    }, async (createdTab) => {
+      sendResponse(await sendMessageOnWaTab(createdTab, autoSend))
     })
 
     // return true since sendResponse will be called asynchronously
