@@ -3,8 +3,10 @@ function sendToWaClicked(waNumber, phoneElement) {
   
   chrome.runtime.sendMessage(
     { waNumber: waNumber, message: generateMessage(phoneElement) },
-    (response) => {
+    async (response) => {
       console.log(response);
+      console.log(await response);
+      
     }
   );
 }

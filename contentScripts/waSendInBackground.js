@@ -1,18 +1,45 @@
 const SEARCH_DELAY = 100; // in ms
+const CHAT_BOX_SELECTOR = '#main';
+const PHONE_INVALID_SELECTOR = '._1CnF3';
 
-// phone number invalid: document.querySelector("._1CnF3")
-// chat box: '#main'
+console.log('waSendInBg');
+
+async function sendMessage() {
+  const createdSelector = await resolveFirst(
+    waitForSelectorToBeAdded(CHAT_BOX_SELECTOR),
+    waitForSelectorToBeAdded(PHONE_INVALID_SELECTOR)
+  );
+
+  switch (createdSelector) {
+    case CHAT_BOX_SELECTOR:
+      document.querySelector('._35EW6').click()
+      return 'sent';
+    case PHONE_INVALID_SELECTOR:
+      return 'phone_invalid';
+  }
+}
+
+function resolveFirst(...promises) {
+  return new Promise(resolve => {
+    promises.forEach(promise => {
+      promise.then(value => resolve(value))
+    })
+  });
+}
 
 // it may run indefinitely. TODO: make it cancellable, using Promise's `reject`
-function waitForElementToBeAdded(cssSelector) {
-  return new Promise((resolve) => {
+function waitForSelectorToBeAdded(cssSelector) {
+  return new Promise(resolve => {
     const interval = setInterval(() => {
-      if (element = document.querySelector(cssSelector)) {
+      if (document.querySelector(cssSelector)) {
         clearInterval(interval);
-        resolve(element);
+        resolve(cssSelector);
       }
     }, SEARCH_DELAY);
   });
 }
 
-console.log(await waitForElementToBeAdded('#main'));
+(async () => {
+  const result = await sendMessage();
+  chrome.runtime.sendMessage({ waSendResult: result });
+}) ();

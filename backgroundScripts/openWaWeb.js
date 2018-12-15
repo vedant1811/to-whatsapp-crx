@@ -21,7 +21,7 @@ chrome.runtime.onMessage.addListener(
  * 
  * @returns a Promise with result
  */
-function sendMessageOnWaTab(waTab, autoSend = false) {
+function sendMessageOnWaTab(waTab, autoSend = true) {
   console.log(`'sendMessageOnWaTab', autoSend: ${autoSend}`);
   console.log(waTab);
 
@@ -41,7 +41,11 @@ function executeScript(tabId, filePath) {
     chrome.tabs.executeScript(
       tabId,
       { file: filePath },
-      (results) => resolve(results[0])
+      (results) => {
+        console.log(results);
+        
+        return resolve(results[0]);
+      }
     )
   });
 }
