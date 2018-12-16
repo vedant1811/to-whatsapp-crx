@@ -3,49 +3,33 @@ chrome.runtime.onMessage.addListener(
     console.log('onMessage');
     console.log(request);
 
-    const autoSend = request.autoSend;
-
-    chrome.tabs.create({
-      url: createWaWebLink(request.waNumber, request.message),
-      active: !autoSend
-    }, async (createdTab) => {
-      sendResponse(await sendMessageOnWaTab(createdTab, autoSend))
-    })
-
-    // return true since sendResponse will be called asynchronously
-    return true;
+    if (request.waNumber) createWaTab(request, sender);
+    else onWaTabResponse(request, sender);
   }
 );
 
-/**
- * 
- * @returns a Promise with result
- */
+function createWaTab(data, sender) {
+  const autoSend = data.autoSend;
+
+  chrome.tabs.create({
+    url: createWaWebLink(data.waNumber, data.message),
+    active: !autoSend
+  }, createdTab => sendMessageOnWaTab(createdTab, autoSend))
+}
+
+function onWaTabResponse(data, sender) {
+
+}
+
 function sendMessageOnWaTab(waTab, autoSend = true) {
   console.log(`'sendMessageOnWaTab', autoSend: ${autoSend}`);
   console.log(waTab);
 
   if (autoSend) {
-    return executeScript(waTab.id, 'contentScripts/waSendInBackground.js');
-  } else {
-    return Promise.resolve('tab_opened');
+    chrome.tabs.executeScript(waTab.id, { file: 'contentScripts/waSendInBackground.js' });
   }
 }
 
 function createWaWebLink(waNumber, text = '') {
   return `https://web.whatsapp.com/send?phone=${waNumber}&text=${text}`;
-}
-
-function executeScript(tabId, filePath) {
-  return new Promise((resolve) => {
-    chrome.tabs.executeScript(
-      tabId,
-      { file: filePath },
-      (results) => {
-        console.log(results);
-        
-        return resolve(results[0]);
-      }
-    )
-  });
 }

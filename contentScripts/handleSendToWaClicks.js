@@ -1,14 +1,7 @@
 function sendToWaClicked(waNumber, phoneElement) {
   console.log('sendToWaClicked');
   
-  chrome.runtime.sendMessage(
-    { waNumber: waNumber, message: generateMessage(phoneElement) },
-    async (response) => {
-      console.log(response);
-      console.log(await response);
-      
-    }
-  );
+  chrome.runtime.sendMessage({ waNumber: waNumber, message: generateMessage(phoneElement) });
 }
 
 // TODO: Implement based on user input via icon action
