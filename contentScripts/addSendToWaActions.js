@@ -1,3 +1,5 @@
+const WA_SPAN_CLASS_NAME = 'wa-span-to-wa-crx';
+
 function toWhatsAppNumber(phoneNumber) {
   return phoneNumber.number.number.substring(1);
 }
@@ -21,7 +23,7 @@ function getPhoneNumbers(document, libPhoneNumber) {
  */
 function findAndAddSendToWa(node, phoneNumbers, libPhoneNumber) {
   if (matchingNumber = matchingWhatsAppNumber(node, phoneNumbers, libPhoneNumber)) {
-    addSendToWaTonode(node, matchingNumber);
+    addSendToWaToNode(node, matchingNumber);
     return;
   }
 
@@ -39,11 +41,13 @@ function matchingWhatsAppNumber(node, phoneNumbers, libPhoneNumber) {
   }
 }
 
-function addSendToWaTonode(node, phoneNumber) {
+function addSendToWaToNode(node, phoneNumber) {
   const waNumber = toWhatsAppNumber(phoneNumber);
   const sendToWaNode = document.createElement('span');
+  sendToWaNode.className = WA_SPAN_CLASS_NAME;
   sendToWaNode.innerHTML = generateSendToWaHtml();
-  sendToWaNode.addEventListener('click', () => { sendToWaClicked(waNumber, node) })
+  sendToWaNode.autoSend = () => sendToWa(waNumber, node, true)
+  sendToWaNode.addEventListener('click', () => sendToWa(waNumber, node, false))
   insertAfter(sendToWaNode, node);
 }
 

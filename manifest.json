@@ -30,8 +30,9 @@
        "js": [
          "lib/require.js",
          "lib/libphonenumber-js.min.js",
-         "contentScripts/handleSendToWaClicks.js",
-         "contentScripts/addSendToWaActions.js"
+         "contentScripts/handleSendToWa.js",
+         "contentScripts/addSendToWaActions.js",
+         "contentScripts/sendToEveryNumber.js"
        ]
      }
    ],

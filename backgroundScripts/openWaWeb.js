@@ -1,5 +1,14 @@
 var autoSendingTo = null;
 
+chrome.browserAction.onClicked.addListener(function(tab) {
+  console.log('browserAction');
+
+  // send message to content scrpit in current tab
+  chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+    connectToSourceTab(tabs[0])
+  });
+});
+
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     console.log('onMessage');
@@ -9,6 +18,16 @@ chrome.runtime.onMessage.addListener(
     else onWaTabResponse(request, sender);
   }
 );
+
+function connectToSourceTab(tab) {
+  const port = chrome.tabs.connect(tab.id, { name: 'send_to_all' });
+  port.onMessage.addListener(onMessageFromSourceTab);
+  port.postMessage({ action: 'start' });
+}
+
+function onMessageFromSourceTab(message) {
+
+}
 
 function createWaTab(data, sender) {
   const autoSend = data.autoSend;
@@ -23,7 +42,7 @@ function onWaTabResponse(data, sender) {
 
 }
 
-function sendMessageOnWaTab(waTab, waNumber, autoSend = true) {
+function sendMessageOnWaTab(waTab, waNumber, autoSend = false) {
   console.log(`'sendMessageOnWaTab', autoSend: ${autoSend}`);
   console.log(waTab);
 
