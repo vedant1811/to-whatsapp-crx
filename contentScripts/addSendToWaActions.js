@@ -46,14 +46,21 @@ function addSendToWaToNode(node, phoneNumber) {
   const sendToWaNode = document.createElement('span');
   sendToWaNode.className = WA_SPAN_CLASS_NAME;
   sendToWaNode.innerHTML = generateSendToWaHtml();
-  sendToWaNode.autoSend = () => sendToWa(waNumber, node, true)
+  sendToWaNode.setStatus = (status) => {
+    sendToWaNode.lastChild.textContent = status;
+  }
+  sendToWaNode.autoSend = () => {
+    sendToWaNode.setStatus('sending');
+    sendToWa(waNumber, node, true);
+  }
   sendToWaNode.addEventListener('click', () => sendToWa(waNumber, node, false))
+
   insertAfter(sendToWaNode, node);
 }
 
 function generateSendToWaHtml() {
   const waIcon = chrome.runtime.getURL('assets/whatsapp.png');
-  return `<a><img class="wa-icon-to-wa-crx" src="${waIcon}" alt="send to WhatsApp"></a>`;
+  return `<img class="wa-icon-to-wa-crx" src="${waIcon}" alt="send to WhatsApp"><i></i>`;
 }
 
 function main(libPhoneNumber) {

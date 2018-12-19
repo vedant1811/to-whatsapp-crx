@@ -1,11 +1,12 @@
-var autoSendingTo = null;
+var connectionPort = null;
+var backgroundWaTabId = null;
 
 chrome.browserAction.onClicked.addListener(function(tab) {
   console.log('browserAction');
 
   // send message to content scrpit in current tab
   chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-    connectToSourceTab(tabs[0])
+    connectToSourceTab(tabs[0].id)
   });
 });
 
@@ -14,22 +15,22 @@ chrome.runtime.onMessage.addListener(
     console.log('onMessage');
     console.log(request);
 
-    if (request.waNumber) createWaTab(request, sender);
-    else onWaTabResponse(request, sender);
+    if (request.waNumber) createWaTab(request);
+    else onWaTabResponse(request);
   }
 );
 
-function connectToSourceTab(tab) {
-  const port = chrome.tabs.connect(tab.id, { name: 'send_to_all' });
-  port.onMessage.addListener(onMessageFromSourceTab);
-  port.postMessage({ action: 'start' });
+function connectToSourceTab(tabId) {
+  connectionPort = chrome.tabs.connect(tabId, { name: 'send_to_all' });
+  connectionPort.onMessage.addListener(onMessageFromSourceTab);
+  connectionPort.postMessage({ action: 'start' });
 }
 
 function onMessageFromSourceTab(message) {
 
 }
 
-function createWaTab(data, sender) {
+function createWaTab(data) {
   const autoSend = data.autoSend;
 
   chrome.tabs.create({
@@ -38,8 +39,13 @@ function createWaTab(data, sender) {
   }, createdTab => sendMessageOnWaTab(createdTab, data.waNumber, autoSend))
 }
 
-function onWaTabResponse(data, sender) {
+function onWaTabResponse(data) {
+  if (connectionPort) {
+    chrome.tabs.remove(backgroundWaTabId);
+    backgroundWaTabId = null;
 
+    connectionPort.postMessage({ action: 'next', lastResult: data.waSendResult })
+  }
 }
 
 function sendMessageOnWaTab(waTab, waNumber, autoSend = false) {
@@ -49,6 +55,7 @@ function sendMessageOnWaTab(waTab, waNumber, autoSend = false) {
   if (autoSend) {
     chrome.tabs.executeScript(waTab.id, { file: 'contentScripts/waSendInBackground.js' });
     autoSendingTo = waNumber;
+    backgroundWaTabId = waTab.id;
   }
 }
 
