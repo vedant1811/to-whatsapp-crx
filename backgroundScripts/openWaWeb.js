@@ -22,12 +22,7 @@ chrome.runtime.onMessage.addListener(
 
 function connectToSourceTab(tabId) {
   connectionPort = chrome.tabs.connect(tabId, { name: 'send_to_all' });
-  connectionPort.onMessage.addListener(onMessageFromSourceTab);
   connectionPort.postMessage({ action: 'start' });
-}
-
-function onMessageFromSourceTab(message) {
-
 }
 
 function createWaTab(data) {
@@ -42,7 +37,6 @@ function createWaTab(data) {
 function onWaTabResponse(data) {
   if (connectionPort) {
     chrome.tabs.remove(backgroundWaTabId);
-    backgroundWaTabId = null;
 
     connectionPort.postMessage({ action: 'next', lastResult: data.waSendResult })
   }

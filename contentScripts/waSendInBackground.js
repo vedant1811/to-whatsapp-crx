@@ -1,6 +1,8 @@
 const SEARCH_DELAY = 100; // in ms
 const CHAT_BOX_SELECTOR = '#main';
 const PHONE_INVALID_SELECTOR = '._1CnF3';
+const MESSAGE_SENDING_SELECTOR = '[data-icon="msg-time"]';
+const MESSAGE_SENT_SELECTOR = '[data-icon="msg-dblcheck-ack"]';
 
 console.log('waSendInBg');
 
@@ -12,7 +14,9 @@ async function sendMessage() {
 
   switch (createdSelector) {
     case CHAT_BOX_SELECTOR:
-      document.querySelector('._35EW6').click()
+      document.querySelector('._35EW6').click();
+      await waitForSelectorToBeAdded(MESSAGE_SENDING_SELECTOR);
+      await waitForSelectorToBeRemoved(MESSAGE_SENDING_SELECTOR);
       return 'sent';
     case PHONE_INVALID_SELECTOR:
       return 'phone_invalid';
@@ -27,13 +31,21 @@ function resolveFirst(...promises) {
   });
 }
 
-// it may run indefinitely. TODO: make it cancellable, using Promise's `reject`
+function waitForSelectorToBeRemoved(cssSelector) {
+  return waitFor(() => !document.querySelector(cssSelector));
+}
+
 function waitForSelectorToBeAdded(cssSelector) {
+  return waitFor(() => document.querySelector(cssSelector));
+}
+
+// it may run indefinitely. TODO: make it cancellable, using Promise's `reject`
+function waitFor(predicate) {
   return new Promise(resolve => {
     const interval = setInterval(() => {
-      if (document.querySelector(cssSelector)) {
+      if (onComplete = predicate()) {
         clearInterval(interval);
-        resolve(cssSelector);
+        resolve(onComplete);
       }
     }, SEARCH_DELAY);
   });
