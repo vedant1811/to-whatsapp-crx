@@ -20,6 +20,8 @@ async function sendMessage() {
       return 'sent';
     case PHONE_INVALID_SELECTOR:
       return 'phone_invalid';
+    default:
+      throw `connot understand ${createdSelector}`;
   }
 }
 
@@ -36,7 +38,7 @@ function waitForSelectorToBeRemoved(cssSelector) {
 }
 
 function waitForSelectorToBeAdded(cssSelector) {
-  return waitFor(() => document.querySelector(cssSelector));
+  return waitFor(() => document.querySelector(cssSelector) ? cssSelector : false);
 }
 
 // it may run indefinitely. TODO: make it cancellable, using Promise's `reject`
