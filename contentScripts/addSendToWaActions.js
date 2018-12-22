@@ -46,9 +46,22 @@ function addSendToWaToNode(node, phoneNumber) {
   const sendToWaNode = document.createElement('span');
   sendToWaNode.className = WA_SPAN_CLASS_NAME;
   sendToWaNode.innerHTML = generateSendToWaHtml();
-  sendToWaNode.setStatus = (status) => {
+  sendToWaNode.getStatus = () => sendToWaNode.lastChild.textContent;
+  sendToWaNode.setStatus = (status, save = false) => {
     sendToWaNode.lastChild.textContent = status;
+
+    if (save) {
+      chrome.storage.sync.set({ [waNumber]: status }, function() {
+        console.log(`saved ${waNumber} : ${status}`);
+      });
+    }
   }
+  chrome.storage.sync.get([waNumber], function(result) {
+    console.log(result);
+    console.log(`got ${waNumber} : ${result[waNumber]}`);
+
+    sendToWaNode.lastChild.textContent = result[waNumber];
+  });
   sendToWaNode.autoSend = () => {
     sendToWaNode.setStatus('sending');
     sendToWa(waNumber, node, true);

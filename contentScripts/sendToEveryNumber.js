@@ -25,8 +25,10 @@ function start() {
 
 function sentWaToNext(lastResult = null) {
   if (currentSpanIndex != null) {
-    const span = phoneSpans[currentSpanIndex];
-    span.setStatus(lastResult);
+    if (lastResult) {
+      const span = phoneSpans[currentSpanIndex];
+      span.setStatus(lastResult, true);
+    }
 
     currentSpanIndex++;
   } else {
@@ -37,7 +39,13 @@ function sentWaToNext(lastResult = null) {
     const span = phoneSpans[currentSpanIndex]
     console.log('sendWaToNext');
     console.log(span);
-    span.autoSend();
+    if (span.getStatus()) {
+      console.log(`skipping:`);
+      console.log(span);
+      sentWaToNext();
+    } else {
+      span.autoSend();
+    }
   } else {
     console.log('all sent');
     currentSpanIndex = null;

@@ -4,6 +4,7 @@
    "version": "1.0",
    "manifest_version": 2,
    "permissions": [
+     "storage",
      "activeTab",
      "tabs",
      "https://web.whatsapp.com/"
