@@ -15,7 +15,8 @@ function getPhoneNumbers(document, libPhoneNumber) {
   // https://stackoverflow.com/questions/35213147/difference-between-textcontent-vs-innertext
   const visibleText = document.body.innerText;
 
-  return libPhoneNumber.findNumbers(visibleText, { v2: true });
+  // TODO: remove hard-coded 'SG'
+  return libPhoneNumber.findNumbers(visibleText, 'SG', { v2: true });
 }
 
 /**
@@ -78,6 +79,8 @@ function generateSendToWaHtml() {
 
 function main(libPhoneNumber) {
   const phoneNumbers = getPhoneNumbers(document, libPhoneNumber);
+  console.log('phoneNumbers:');
+  console.log(phoneNumbers);
   findAndAddSendToWa(document.body, phoneNumbers, libPhoneNumber);
 }
 
